@@ -1,5 +1,6 @@
 const express     = require('express');
 const MongoClient = require('mongodb').MongoClient;
+const mongoose    = require('mongoose');
 const bodyParser  = require('body-parser');
 const db          = require('./config/db');
 
@@ -9,15 +10,15 @@ const port        = 8000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-MongoClient.connect(db.url, { useNewUrlParser: true }, (err, database) => {
+
+mongoose.connect(db.url, { useNewUrlParser: true }, (err, database) => {
   if (err) return console.log(`Error::::${err}`);
 
-  console.log(`[i] Succesfully connected to mongoDB`);
+  console.log('[i] Connected via mongoose');
 
-  const db = database.db('node-api-example');
   require('./app/routes')(app, db);
 
   app.listen(port, () => {
     console.log(`[i] Listening on port ${port}...`);
   });
-})
+});

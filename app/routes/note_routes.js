@@ -11,5 +11,7 @@ module.exports = function(app, db) {
 
   app.post('/notes', notes_controller.createNote);
 
+  app.get('/notes', notes_controller.getNoteList);
+
   console.log('[i] note_routes exported successfully');
 };

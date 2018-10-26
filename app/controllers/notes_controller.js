@@ -3,7 +3,7 @@ const Note = require('../models/note');
 exports.getNote = (req, res) => {
   Note.findById(req.params.id, (err, item) => {
     if (err) {
-      throwError(res, err);
+      throwError(res, err, 500);
     } else {
       res.send(item);
     }
@@ -13,7 +13,7 @@ exports.getNote = (req, res) => {
 exports.updateNote = (req, res) => {
   Note.findOneAndUpdate({ _id: req.params.id }, req.body, (err, result) => {
     if (err) {
-      throwError(res, err);
+      throwError(res, err, 500);
     } else {
       console.log(result);
       res.send(result);
@@ -24,7 +24,7 @@ exports.updateNote = (req, res) => {
 exports.deleteNote = (req, res) => {
   Note.findByIdAndDelete(req.params.id, (err) => {
     if (err) {
-      throwError(res, err);
+      throwError(res, err, 500);
     } else {
       res.send('Successfully deleted.');
     }
@@ -38,14 +38,24 @@ exports.createNote = (req, res) => {
   }
   Note.create(newNote, (err, note) => {
     if (err) {
-      throwError(res, err);
+      throwError(res, err, 500);
     } else {
       res.send(note);
     }
   });
 }
 
-function throwError(res, err) {
+exports.getNoteList = (req, res) => {
+  let noteList = Note.find({}, (err, notes) => {
+    if (err) {
+      throwError(res, err, 500);
+    } else {
+      res.status(200).send(notes);
+    }
+  });
+}
+
+function throwError(res, err, statusCode) {
   console.log(`Error:::: ${err}`);
-  res.send({ 'Error': err });
+  res.status(statusCode).send({ 'Error': err });
 }
